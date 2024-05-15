@@ -10,7 +10,10 @@ app=Flask(__name__)
 
 @app.route("/getissues",methods=["POST"])
 def extractissues():
-    df = pd.read_excel('DPRSample.xlsx') 
+    file = request.files['file']
+    # save file in local directory
+    # file.save(file.filename)
+    df = pd.read_excel(file) 
     print(df)
     row_data = df.iloc[:, 0].tolist()
     # print(row_data)
