@@ -1,5 +1,5 @@
 # import xlrd
-from flask import Flask
+from flask import Flask,request,jsonify
 import openpyxl
 import pandas as pd
 print("helo world")
@@ -23,10 +23,8 @@ def extractissues():
     # start_idx = row_data.find('technical issues') + len('technical issues') + 1
     # end_idx = row_data.find('material issues')
     # values_between = row_data[start_idx:end_idx].strip()
-    non_empty_values = [value for value in row_data[technical_idx+1:material_idx] if value]
-    return non_empty_values
-    print(non_empty_values)
-    print(technical_idx,material_idx)
+    non_empty_issues = [value for value in row_data[technical_idx+1:material_idx] if value]
+    return jsonify({'issues': non_empty_issues})
 # for name in book.sheet_names():
 #     if name.endswith('2'):
 #         sheet = book.sheet_by_name(name)
