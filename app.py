@@ -11,20 +11,24 @@ app=Flask(__name__)
 @app.route("/getissues",methods=["POST"])
 def extractissues():
     file = request.files['file']
-    # save file in local directory
-    # file.save(file.filename)
     df = pd.read_excel(file) 
-    print(df)
     row_data = df.iloc[:, 0].tolist()
-    # print(row_data)
     technical_idx = row_data.index('Technical Issues')
     material_idx = row_data.index('Material Issues')
-
-    # start_idx = row_data.find('technical issues') + len('technical issues') + 1
-    # end_idx = row_data.find('material issues')
-    # values_between = row_data[start_idx:end_idx].strip()
     non_empty_issues = [value for value in row_data[technical_idx+1:material_idx] if value]
-    return jsonify({'issues': non_empty_issues})
+
+    #fetch days activities
+    const_id = df[df.iloc[:, 0] == 'CONSTRUCTION ACTIVITIES'].index[0]
+    health_id = df[df.iloc[:, 0] == 'HEALTH, ENVIRONMENTAL,SAFETY AND SECURITY ACTIVITIES'].index[0]
+    selected_rows = df.iloc[const_id:health_id] 
+    selected_rows_trimmed = selected_rows.iloc[:, 5:-3]
+    df_filtered = selected_rows_trimmed.dropna(subset=[selected_rows_trimmed.columns[1]])
+    # print("Row ID:", df_filtered)
+    column_names = ['Today Activities', 'Planned',"Achieved Today","Cumulative","Total scope","Remarks" ]
+    df_filtered.columns = column_names
+    data_list = df_filtered.to_dict(orient='records')
+    return jsonify({'issues': non_empty_issues, 'daily_activities':data_list})
+
 # for name in book.sheet_names():
 #     if name.endswith('2'):
 #         sheet = book.sheet_by_name(name)
