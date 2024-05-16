@@ -26,8 +26,10 @@ def extractissues():
     # print("Row ID:", df_filtered)
     column_names = ['Today Activities', 'Planned',"Achieved Today","Cumulative","Total scope","Remarks" ]
     df_filtered.columns = column_names
-    df_filtered[['Achieved Today', 'Planned']] = df_filtered[['Achieved Today', 'Planned']].apply(pd.to_numeric, errors='coerce')
-    df_filtered['Percentage Complete'] = (df_filtered['Achieved Today'] / df_filtered['Planned']) * 100
+    df_filtered[['Cumulative', 'Total scope']] = df_filtered[['Cumulative', 'Total scope']].apply(pd.to_numeric, errors='coerce')
+    df_filtered['Percentage Complete'] = (df_filtered['Cumulative'] / df_filtered['Total scope']) * 100
+    # df_filtered[['Achieved Today', 'Planned']] = df_filtered[['Achieved Today', 'Planned']].apply(pd.to_numeric, errors='coerce')
+
     data_list = df_filtered.to_dict(orient='records')
     return jsonify({'issues': non_empty_issues, 'daily_activities':data_list})
 
